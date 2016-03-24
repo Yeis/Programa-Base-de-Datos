@@ -24,5 +24,15 @@ namespace DataBaseAssignmentWPF
         {
             InitializeComponent();
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataBaseManager DBM = new DataBaseManager();
+            List<DataBase> databases = DBM.GetDataBases();
+            foreach (DataBase data in databases)
+            {
+                textBlock.Text += data.Name;
+            }
+        }
     }
 }
