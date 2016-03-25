@@ -6,8 +6,14 @@
         xmlns:local="clr-namespace:DataBaseAssignmentWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Loaded="Window_Loaded">
-    <Grid>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="130,93,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="130" Width="338"/>
+    <Grid Background="#FFDADADA">
+        <Button x:Name="button" Content="Connect Local" HorizontalAlignment="Left" Margin="44,265,0,0" VerticalAlignment="Top" Width="98" Click="connect_Click"/>
+        <ListBox x:Name="lbDBs" HorizontalAlignment="Left" Height="243" Margin="10,10,0,0" VerticalAlignment="Top" Width="159"/>
+        <Button x:Name="btnBackup" Content="Backup DB" HorizontalAlignment="Left" Margin="186,29,0,0" VerticalAlignment="Top" Width="75" Click="backup_Click"/>
+        <RichTextBox x:Name="rtbLog" HorizontalAlignment="Left" Height="110" Margin="186,175,0,0" VerticalAlignment="Top" Width="305" TextChanged="rtbLog_TextChanged">
+            <FlowDocument/>
+        </RichTextBox>
+        <Label x:Name="label" Content="Log" HorizontalAlignment="Left" Margin="195,149,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

@@ -15,9 +15,9 @@ namespace DataBaseAssignmentWPF
         public DataBase(){}
         public DataBase(string name , short id , DateTime created)
         {
-            this.Created = created;
-            this.dbID = id;
-            this.Name = name;
+            Created = created;
+            dbID = id;
+            Name = name;
         }
     }
 }
