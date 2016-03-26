@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.SqlServer.Management.Smo;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace DataBaseAssignmentWPF
 {
@@ -52,7 +53,6 @@ namespace DataBaseAssignmentWPF
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -83,8 +83,8 @@ namespace DataBaseAssignmentWPF
                  
                 }
 
-
-               
+                if (myserver.ConnectionContext.IsOpen)
+                    myserver.ConnectionContext.Disconnect();
             }
             catch (Exception)
             {
@@ -102,7 +102,15 @@ namespace DataBaseAssignmentWPF
             Backup buFull = new Backup();
             buFull.Action = BackupActionType.Database;
             buFull.Database = db.Name;
-            buFull.Devices.AddDevice(@"\" + db.Name + ".bak", DeviceType.File);
+            BackupDeviceItem BDI = new BackupDeviceItem();
+            BDI.DeviceType = DeviceType.File;
+            string dbTime = db.Name + "-" + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day 
+                + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second;
+            BDI.Name = @".\" + dbTime + ".bak";
+            //buFull.Incremental = true;
+            //buFull.Devices.AddDevice(", DeviceType.File);
+            buFull.Devices.Add(BDI);
+
             buFull.BackupSetName = db.Name + " Backup";
             buFull.BackupSetDescription = db.Name + " - Full Backup";
 
