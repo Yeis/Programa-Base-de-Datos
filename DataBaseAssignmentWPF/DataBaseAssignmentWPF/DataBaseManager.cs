@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.SqlServer.Management.Smo;
+using System.IO;
 
 namespace DataBaseAssignmentWPF
 {
@@ -28,7 +29,10 @@ namespace DataBaseAssignmentWPF
             }
 
             if (myServer.ConnectionContext.IsOpen)
+            {
                 myServer.ConnectionContext.Disconnect();
+               
+            }
             
             return dbs;
         }
@@ -53,27 +57,42 @@ namespace DataBaseAssignmentWPF
             }
 
         }
-        public List<BackupDeviceItem> GetAllBackups()
+        public List<String> GetAllBackups()
         {
-            List<BackupDeviceItem> Backups = new List<BackupDeviceItem>();
+            List<String> Backups = new List<String>();
+            
             try
             {
                
                 Server myserver = new Server(@"(local)");
                 myserver.ConnectionContext.LoginSecure = true;
                 myserver.ConnectionContext.Connect();
-                foreach (BackupDeviceItem item in myserver.BackupDevices)
+
+                string[] files = Directory.GetFiles(myserver.BackupDirectory,"*.bak",SearchOption.AllDirectories);
+
+                foreach (Database item in myserver.Databases)
                 {
-                    Backups.Add(item);
+
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        if (files[i].Contains(item.Name))
+                        {
+                            Backups.Add(files[i].Substring(71) + "Belongs to: " + item.Name);
+                        }
+                    }
+                 
                 }
 
-                
+
+               
             }
             catch (Exception)
             {
 
                 throw;
             }
+            
+
             return Backups;
         }
 
@@ -83,7 +102,7 @@ namespace DataBaseAssignmentWPF
             Backup buFull = new Backup();
             buFull.Action = BackupActionType.Database;
             buFull.Database = db.Name;
-            buFull.Devices.AddDevice(@"C:\" + db.Name + ".bak", DeviceType.File);
+            buFull.Devices.AddDevice(@"\" + db.Name + ".bak", DeviceType.File);
             buFull.BackupSetName = db.Name + " Backup";
             buFull.BackupSetDescription = db.Name + " - Full Backup";
 
