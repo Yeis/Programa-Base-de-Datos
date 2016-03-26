@@ -22,6 +22,8 @@ namespace DataBaseAssignmentWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        DataBaseManager DBM = new DataBaseManager();
+        List<Database> databases;
         public MainWindow()
         {
             InitializeComponent();
@@ -34,23 +36,28 @@ namespace DataBaseAssignmentWPF
 
         private void connect_Click(object sender, RoutedEventArgs e)
         {
-            DataBaseManager DBM = new DataBaseManager();
+         
             rtbLog.AppendText("- Connecting to Local Server... \n\n");
-            List<Database> databases = DBM.GetDataBases();
+            databases = DBM.GetDataBases();
             rtbLog.AppendText("- Displaying Databases... \n\n");
 
+            ListDatabases();
+            
+        }
+        public void ListDatabases()
+        {
             lbDBs.DisplayMemberPath = "Name";
+            lbDBs.Items.Clear();
             foreach (Database data in databases)
             {
                 lbDBs.Items.Add(data);
             }
         }
-
+    
         private void backup_Click(object sender, RoutedEventArgs e)
         {
             var db = lbDBs.SelectedItem as Database;
             rtbLog.AppendText("- Creating backup of database " + db.Name  +"... \n\n");
-            DataBaseManager DBM = new DataBaseManager();
             DBM.BackupDataBase(db);
             rtbLog.AppendText("- Backup of database " + db.Name + " complete. \n\n");
 
@@ -59,6 +66,31 @@ namespace DataBaseAssignmentWPF
         private void rtbLog_TextChanged(object sender, TextChangedEventArgs e)
         {
             rtbLog.ScrollToEnd();
+        }
+
+        private void buttoncrear_Click(object sender, RoutedEventArgs e)
+        {
+            //Crear una base de datos 
+            rtbLog.AppendText("- Creating Database... \n\n");
+            if (tb_BaseDatos.Text != "")
+            {
+                DBM.CrearDataBase(tb_BaseDatos.Text);
+                databases = DBM.GetDataBases();
+                ListDatabases();
+                rtbLog.AppendText("- Database"+tb_BaseDatos.Text+" created \n\n");
+                tb_BaseDatos.Text = "";
+            }
+            else
+            {
+                rtbLog.AppendText("- Invalid Input \n\n");
+            }
+      
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            //listamos todos los backups existentes en el log 
+            DBM.GetAllBackups();
         }
     }
 }

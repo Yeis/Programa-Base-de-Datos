@@ -10,34 +10,12 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace DataBaseAssignmentWPF
 {
+    //Capa de Negocios para operaciones relacionadas a las bases de datos
     public class DataBaseManager
     {
+        //Metodo que nos trae todas las bases de datos del local server 
         public List<Database> GetDataBases()
         {
-            //List<DataBase> temp = new List<DataBase>();
-            //using (var connection =  new SqlConnection("Data Source=(local); Integrated Security = true"))
-            //{
-            //    try
-            //    {
-            //        connection.Open();
-            //        DataTable databases = connection.GetSchema("Databases");
-            //        foreach (DataRow database in databases.Rows)
-            //        {
-            //            string Name = database.Field<string>("database_name");
-            //            short dbID = database.Field<short>("dbid");
-            //            DateTime created = database.Field<DateTime>("create_date");
-            //            temp.Add(new DataBase(Name, dbID, created));
-            //        }
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        MessageBox.Show(e.Message);
-            //    }
-
-            //    return temp;
-            //}
-
-
             List<Database> dbs = new List<Database>();
 
             Server myServer = new Server(@"(local)");
@@ -54,7 +32,52 @@ namespace DataBaseAssignmentWPF
             
             return dbs;
         }
+        //Metodo que crea una base de datos con un nombre como parametro (cero configuraciones)
+        public void CrearDataBase(string nombre)
+        {
+            try
+            {
+                Server myserver = new Server(@"(local)");
+                myserver.ConnectionContext.LoginSecure = true;
+                myserver.ConnectionContext.Connect();
+                Database db = new Database(myserver, nombre);
+                db.Create();
 
+                if (myserver.ConnectionContext.IsOpen)
+                    myserver.ConnectionContext.Disconnect();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        public List<BackupDeviceItem> GetAllBackups()
+        {
+            List<BackupDeviceItem> Backups = new List<BackupDeviceItem>();
+            try
+            {
+               
+                Server myserver = new Server(@"(local)");
+                myserver.ConnectionContext.LoginSecure = true;
+                myserver.ConnectionContext.Connect();
+                foreach (BackupDeviceItem item in myserver.BackupDevices)
+                {
+                    Backups.Add(item);
+                }
+
+                
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Backups;
+        }
+
+        //Metodo que hace un Backup de una base de datos seleccionada
         public void BackupDataBase(Database db)
         {
             Backup buFull = new Backup();
