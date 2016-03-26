@@ -87,9 +87,9 @@ namespace DataBaseAssignmentWPF
             buFull.Database = db.Name;
             BackupDeviceItem BDI = new BackupDeviceItem();
             BDI.DeviceType = DeviceType.File;
-            string dbTime = db.Name + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day 
+            string dbTime = db.Name + "-" + DateTime.Now.Year + DateTime.Now.Month + DateTime.Now.Day 
                 + DateTime.Now.Hour + DateTime.Now.Minute + DateTime.Now.Second;
-            BDI.Name = @".\" + db.Name + ".bak";
+            BDI.Name = @".\" + dbTime + ".bak";
             //buFull.Incremental = true;
             //buFull.Devices.AddDevice(", DeviceType.File);
             buFull.Devices.Add(BDI);
