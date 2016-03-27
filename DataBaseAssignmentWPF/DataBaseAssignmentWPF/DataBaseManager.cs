@@ -77,10 +77,12 @@ namespace DataBaseAssignmentWPF
                     {
                         if (files[i].Contains(item.Name))
                         {
-                            Backups.Add(files[i].Substring(71) + "Belongs to: " + item.Name);
+                            //  Backups.Add(files[i].Substring(71) + "Belongs to: " + item.Name);
+                           Backups.Add(files[i].Substring(files[i].LastIndexOf("Backup\\")+7) +  " Belongs to " + item.Name);
+                            string temp = files[i].LastIndexOf("Backup\\").ToString(); 
                         }
+
                     }
-                 
                 }
 
                 if (myserver.ConnectionContext.IsOpen)
@@ -96,7 +98,7 @@ namespace DataBaseAssignmentWPF
             return Backups;
         }
 
-        //Metodo que hace un Backup de una base de datos seleccionada
+        //Me todo que hace un Backup de una base de datos seleccionada
         public void BackupDataBase(Database db)
         {
             Backup buFull = new Backup();
