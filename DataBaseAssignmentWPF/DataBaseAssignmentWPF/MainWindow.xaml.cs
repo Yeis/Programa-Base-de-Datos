@@ -90,11 +90,21 @@ namespace DataBaseAssignmentWPF
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             //listamos todos los backups existentes en el log 
+            rtbLog.AppendText("- Obtaining Backups... \n\n");
+
             List<string> BDIs = DBM.GetAllBackups();
-            foreach (string i in BDIs)
+
+            lbBckp.Items.Clear();
+            foreach (string s in BDIs)
             {
-                rtbLog.AppendText(i + "\n\n");
+                lbBckp.Items.Add(s);
             }
+
+        }
+
+        private void lbBckp_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
