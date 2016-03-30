@@ -40,22 +40,39 @@ namespace DataBaseAssignmentWPF
         //Metodo que crea una base de datos con un nombre como parametro (cero configuraciones)
         public void CrearDataBase(string nombre)
         {
+            bool Exists = false;
+            Server myserver = new Server(@"(local)");
+            List<Database> DataBases = GetDataBases();
+            myserver.ConnectionContext.LoginSecure = true;
             try
-            {
-                Server myserver = new Server(@"(local)");
-                myserver.ConnectionContext.LoginSecure = true;
+            {   
                 myserver.ConnectionContext.Connect();
-                Database db = new Database(myserver, nombre);
-                db.Create();
+                //validacion de nombre de base de datos 
+                foreach (Database DB in DataBases)
+                {
+                    if (DB.Name == nombre)
+                    {
+                        //La base de datos ya existe 
+                        Exists = true;
 
-                if (myserver.ConnectionContext.IsOpen)
-                    myserver.ConnectionContext.Disconnect();
+                    }
+                }
+                if (Exists)
+                {
+                    Database db = new Database(myserver, nombre);
+                    db.Create();
+                }
+
+
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                MessageBox.Show(ex.Message);
+   
             }
 
+            if (myserver.ConnectionContext.IsOpen)
+                myserver.ConnectionContext.Disconnect();
         }
         public List<String> GetAllBackups()
         {
@@ -68,20 +85,23 @@ namespace DataBaseAssignmentWPF
                 myserver.ConnectionContext.LoginSecure = true;
                 myserver.ConnectionContext.Connect();
 
-                string[] files = Directory.GetFiles(myserver.BackupDirectory,"*.bak",SearchOption.AllDirectories);
-
-                foreach (Database item in myserver.Databases)
+                //validacion de directorio 
+                if (Directory.Exists(myserver.BackupDirectory))
                 {
-
-                    for (int i = 0; i < files.Length; i++)
+                    string[] files = Directory.GetFiles(myserver.BackupDirectory, "*.bak", SearchOption.AllDirectories);
+                    //muy costoso podemos obtener la info por medio de un Restore momentaneo 
+                    foreach (Database item in myserver.Databases)
                     {
-                        if (files[i].Contains(item.Name))
-                        {
-                            //  Backups.Add(files[i].Substring(71) + "Belongs to: " + item.Name);
-                           Backups.Add(files[i].Substring(files[i].LastIndexOf("Backup\\")+7) +  " Belongs to " + item.Name);
-                            string temp = files[i].LastIndexOf("Backup\\").ToString(); 
-                        }
 
+                        for (int i = 0; i < files.Length; i++)
+                        {
+                            if (files[i].Contains(item.Name))
+                            {
+                                //  Backups.Add(files[i].Substring(71) + "Belongs to: " + item.Name);
+                                Backups.Add(files[i].Substring(files[i].LastIndexOf("Backup\\") + 7) + " Belongs to " + item.Name);
+                                string temp = files[i].LastIndexOf("Backup\\").ToString();
+                            }
+                        }
                     }
                 }
 
@@ -126,5 +146,10 @@ namespace DataBaseAssignmentWPF
                 myServer.ConnectionContext.Disconnect();
 
         }
+        public void  GetSP()
+        {
+        }
+        public void RestoreDatabase() { }
+        publci 
     }
 }
