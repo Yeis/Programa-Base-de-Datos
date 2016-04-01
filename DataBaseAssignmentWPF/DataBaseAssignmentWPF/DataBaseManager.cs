@@ -149,7 +149,29 @@ namespace DataBaseAssignmentWPF
         public void  GetSP()
         {
         }
-        public void RestoreDatabase() { }
-        publci 
+        public void RestoreDatabase(string Path)
+        {
+            //Restaura un Backup
+            Restore Res = new Restore();
+            Server myServer = new Server(@"(local)");
+            myServer.ConnectionContext.LoginSecure = true;
+            Res.Devices.Add( new BackupDeviceItem(Path , DeviceType.File));
+            Regex regex = new Regex("(.*?)\\.bak");
+            var match = regex.Match(Path);
+            Res.Database = match.Groups[1].ToString();
+            Res.NoRecovery = true;
+
+            try
+            {
+         
+                Res.SqlRestore(myServer);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                throw;
+            }
+        }
+    
     }
 }
