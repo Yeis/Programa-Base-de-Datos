@@ -102,8 +102,31 @@ namespace DataBaseAssignmentWPF
 
         }
 
-        private void lbBckp_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void lbDBs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            rtbLog.AppendText("- Obtaining Stored Procedures... \n\n");
+
+            List<StoredProcedure> BDIs = DBM.GetAllSPs(lbDBs.SelectedValue.ToString());
+
+            lbBckp.Items.Clear();
+            foreach (StoredProcedure s in BDIs)
+            {
+                lbBckp.Items.Add(s);
+            }
+        }
+
+        private void btnEncrypt_Click(object sender, RoutedEventArgs e)
+        {
+            if(lbBckp.SelectedItem != null && lbBckp.SelectedItem is StoredProcedure)
+            {
+                rtbLog.AppendText("- Encrypting selected SP... \n\n");
+                DBM.EncryptSP(lbBckp.SelectedItem as StoredProcedure);
+                rtbLog.AppendText("- Finished Encrypting SP\n\n");
+            }
+            else
+            {
+                rtbLog.AppendText("- There is no Stored Procedure selected!");
+            }
 
         }
     }

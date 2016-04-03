@@ -9,6 +9,7 @@ using System.Windows;
 using Microsoft.SqlServer.Management.Smo;
 using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.SqlServer.Management.Sdk.Sfc;
 
 namespace DataBaseAssignmentWPF
 {
@@ -74,9 +75,9 @@ namespace DataBaseAssignmentWPF
             if (myserver.ConnectionContext.IsOpen)
                 myserver.ConnectionContext.Disconnect();
         }
-        public List<String> GetAllBackups()
+        public List<string> GetAllBackups()
         {
-            List<String> Backups = new List<String>();
+            List<string> Backups = new List<string>();
             
             try
             {
@@ -118,6 +119,31 @@ namespace DataBaseAssignmentWPF
             return Backups;
         }
 
+        public List<StoredProcedure> GetAllSPs(string dbName)
+        {
+            if(dbName.Contains('[') && dbName.Contains(']'))
+            {
+                dbName = dbName.Substring(1, dbName.Length - 2);
+            }
+
+            Server server = new Server(@"(local)");
+            Database db = server.Databases[dbName];
+            List<StoredProcedure> list = new List<StoredProcedure>();
+            DataTable dataTable = db.EnumObjects(DatabaseObjectTypes.StoredProcedure);
+            foreach (DataRow row in dataTable.Rows)
+            {
+                string sSchema = (string)row["Schema"];
+                if (sSchema == "sys" || sSchema == "INFORMATION_SCHEMA")
+                    continue;
+                StoredProcedure sp = (StoredProcedure)server.GetSmoObject(
+                   new Urn((string)row["Urn"]));
+                if (!sp.IsSystemObject)
+                    list.Add(sp);
+            }
+
+            return list;
+        }
+
         //Me todo que hace un Backup de una base de datos seleccionada
         public void BackupDataBase(Database db)
         {
@@ -146,9 +172,7 @@ namespace DataBaseAssignmentWPF
                 myServer.ConnectionContext.Disconnect();
 
         }
-        public void  GetSP()
-        {
-        }
+
         public void RestoreDatabase(string Path)
         {
             //Restaura un Backup
@@ -170,6 +194,25 @@ namespace DataBaseAssignmentWPF
             {
                 MessageBox.Show(ex.Message);
                 throw;
+            }
+        }
+
+        public void EncryptSP(StoredProcedure sp)
+        {
+            if (!sp.IsSystemObject)// Exclude System stored procedures
+            {
+                if (!sp.IsEncrypted) // Exclude already encrypted stored procedures
+                {
+                    string text = "";// = sp.TextBody;
+                    sp.TextMode = false;
+                    sp.IsEncrypted = true;
+                    sp.TextMode = true;
+                    sp.Alter();
+
+                    Console.WriteLine(sp.Name); // display name of the encrypted SP.                        
+                    sp = null;
+                    text = null;
+                }
             }
         }
     

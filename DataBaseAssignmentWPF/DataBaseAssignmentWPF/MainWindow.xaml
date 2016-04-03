@@ -5,21 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataBaseAssignmentWPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="777" Loaded="Window_Loaded" ResizeMode="NoResize">
+        Title="MainWindow" Height="363.649" Width="777" Loaded="Window_Loaded" ResizeMode="NoResize">
     <Grid Background="#FFDADADA">
         <Button x:Name="button" Content="Connect Local" HorizontalAlignment="Left" Margin="35,265,0,0" VerticalAlignment="Top" Width="98" Click="connect_Click"/>
-        <Button x:Name="buttoncrear" Content="OK" HorizontalAlignment="Left" Margin="249,121,0,0" VerticalAlignment="Top" Width="78" Click="buttoncrear_Click"/>
-        <ListBox x:Name="lbDBs" HorizontalAlignment="Left" Height="243" Margin="10,10,0,0" VerticalAlignment="Top" Width="159"/>
+        <Button x:Name="buttoncrear" Content="OK" HorizontalAlignment="Left" Margin="364,70,0,0" VerticalAlignment="Top" Width="78" Click="buttoncrear_Click"/>
+        <ListBox x:Name="lbDBs" HorizontalAlignment="Left" Height="243" Margin="10,10,0,0" VerticalAlignment="Top" Width="159" SelectionChanged="lbDBs_SelectionChanged"/>
         <Button x:Name="btnBackup" Content="Backup DB" HorizontalAlignment="Left" Margin="186,14,0,0" VerticalAlignment="Top" Width="75" Click="backup_Click"/>
         <RichTextBox x:Name="rtbLog" HorizontalAlignment="Left" Height="110" Margin="186,175,0,0" VerticalAlignment="Top" Width="281" TextChanged="rtbLog_TextChanged">
             <FlowDocument/>
         </RichTextBox>
         <Label x:Name="label" Content="Log" HorizontalAlignment="Left" Margin="195,149,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="tb_BaseDatos" HorizontalAlignment="Left" Height="23" Margin="225,93,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Label x:Name="label_Copy" Content="Name: " HorizontalAlignment="Left" Margin="177,93,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="button1" Content="List Backups" HorizontalAlignment="Left" Margin="579,265,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
-        <Label x:Name="label1" Content="Create Database" HorizontalAlignment="Left" Margin="239,62,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="lbBckp" HorizontalAlignment="Left" Height="243" Margin="484,10,0,0" VerticalAlignment="Top" Width="251" SelectionChanged="lbBckp_SelectionChanged"/>
+        <TextBox x:Name="tb_BaseDatos" HorizontalAlignment="Left" Height="23" Margin="340,42,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label_Copy" Content="Name: " HorizontalAlignment="Left" Margin="292,42,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button1" Content="List Backups" HorizontalAlignment="Left" Margin="186,42,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+        <Label x:Name="label1" Content="Create Database" HorizontalAlignment="Left" Margin="354,11,0,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="lbBckp" HorizontalAlignment="Left" Height="275" Margin="484,10,0,0" VerticalAlignment="Top" Width="251"/>
+        <Button x:Name="btnEncrypt" Content="Encrypt SP" HorizontalAlignment="Left" Margin="572,290,0,0" VerticalAlignment="Top" Width="75" Click="btnEncrypt_Click"/>
 
     </Grid>
 </Window>
