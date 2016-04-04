@@ -176,27 +176,56 @@ namespace DataBaseAssignmentWPF
         public void RestoreDatabase(string Path)
         {
             //Restaura un Backup
-            Restore Res = new Restore();
+            string name = Path.Substring(Path.LastIndexOf(" Belongs to ") + 12);
             Server myServer = new Server(@"(local)");
             myServer.ConnectionContext.LoginSecure = true;
-            Res.Devices.Add( new BackupDeviceItem(Path , DeviceType.File));
-            Regex regex = new Regex("(.*?)\\.bak");
-            var match = regex.Match(Path);
-            Res.Database = match.Groups[1].ToString();
-            Res.NoRecovery = true;
+            myServer.ConnectionContext.Connect();
+
+            string logicalpath = myServer.BackupDirectory + "\\" + Path.Substring(0, Path.LastIndexOf(".bak") + 4);
+            //Restore Res = new Restore();
+
+            //Res.Devices.Add(new BackupDeviceItem(logicalpath, DeviceType.File));
+            //// Regex regex = new Regex("(.*?)\\.bak");
+            ////  var match = regex.Match(Path);
+            //Res.Database = name;
+            //Res.NoRecovery = true;
 
             try
             {
-         
-                Res.SqlRestore(myServer);
+                Restore res = new Restore();
+
+                res.Devices.AddDevice(logicalpath, DeviceType.File);
+
+                //RelocateFile DataFile = new RelocateFile();
+                //string MDF = res.ReadFileList(myServer).Rows[0][1].ToString();
+                //DataFile.LogicalFileName = res.ReadFileList(myServer).Rows[0][0].ToString();
+                //DataFile.PhysicalFileName = myServer.Databases[name].FileGroups[0].Files[0].FileName;
+
+                //RelocateFile LogFile = new RelocateFile();
+                //string LDF = res.ReadFileList(myServer).Rows[1][1].ToString();
+                //LogFile.LogicalFileName = res.ReadFileList(myServer).Rows[1][0].ToString();
+                //LogFile.PhysicalFileName = myServer.Databases[name].LogFiles[0].FileName;
+
+                //res.RelocateFiles.Add(DataFile);
+                //res.RelocateFiles.Add(LogFile);
+
+                res.Database = name;
+                res.NoRecovery = false;
+                res.ReplaceDatabase = true;
+                res.SqlRestore(myServer);
+
+            }
+            catch (SmoException SMOEX)
+            {
+                MessageBox.Show(SMOEX.Message);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                throw;
             }
+            if (myServer.ConnectionContext.IsOpen)
+                myServer.ConnectionContext.Disconnect();
         }
-
         public void EncryptSP(StoredProcedure sp)
         {
             if (!sp.IsSystemObject)// Exclude System stored procedures

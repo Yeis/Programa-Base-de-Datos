@@ -24,6 +24,7 @@ namespace DataBaseAssignmentWPF
     {
         DataBaseManager DBM = new DataBaseManager();
         List<Database> databases;
+        bool backup = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -56,6 +57,7 @@ namespace DataBaseAssignmentWPF
     
         private void backup_Click(object sender, RoutedEventArgs e)
         {
+            
             var db = lbDBs.SelectedItem as Database;
             rtbLog.AppendText("- Creating backup of database " + db.Name  +"... \n\n");
             DBM.BackupDataBase(db);
@@ -89,6 +91,7 @@ namespace DataBaseAssignmentWPF
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
+            backup = true;
             //listamos todos los backups existentes en el log 
             rtbLog.AppendText("- Obtaining Backups... \n\n");
 
@@ -105,7 +108,7 @@ namespace DataBaseAssignmentWPF
         private void lbDBs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             rtbLog.AppendText("- Obtaining Stored Procedures... \n\n");
-
+            backup = false;
             List<StoredProcedure> BDIs = DBM.GetAllSPs(lbDBs.SelectedValue.ToString());
 
             lbBckp.Items.Clear();
@@ -128,6 +131,22 @@ namespace DataBaseAssignmentWPF
                 rtbLog.AppendText("- There is no Stored Procedure selected!");
             }
 
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            //HACER RESTORE A LA BASE DE DATOS 
+            if (backup && lbBckp.SelectedItem != null)
+            {
+                //hacemos el restore del backup seleccionado 
+                DBM.RestoreDatabase(lbBckp.SelectedItem.ToString());
+                rtbLog.AppendText("- The Restore has been completed");
+
+            }
+            else
+            {
+                rtbLog.AppendText("- Invalid .bak file to Restore  ");
+            }
         }
     }
 }
